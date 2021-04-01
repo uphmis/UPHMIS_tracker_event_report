@@ -1,0 +1,103 @@
+<div style="margin-left: -270px ">
+    <div class="row" id="mainPage">
+
+    <div class="col-md-6">
+        <div class="well well-lg">
+            <table class="table table-borderless table-striped">
+                <tr>
+                    <td>Selected Organisation Unit</td>
+                    <td>
+                        <input type="text" class="form-control" value="{{selectedOrgUnit.name|| 'please_select'| translate}}" ng-disabled="true">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Program</td>
+                    <td class='col-sm-4 col-md-3'>
+                        <select ng-model="selectedProgram" class="form-control" ng-options="program.name for program in programs | orderBy: 'name'">
+                            <option value="">Please select program</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Selection Parameter -->
+<div class="well selcsection">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <b>Start Date:-</b>
+                </span>
+                <input calendar ng-model='startdate' class="form-control" ng-change="updateStartDate(startdate);" style="margin:0px;padding: 16px;"
+                    required placeholder="Start Date" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <b>End Date:-</b>
+                </span>
+                <input calendar ng-model='enddate' class="form-control" ng-change="updateEndDate(enddate);" required style="margin:0px;padding: 16px;"
+                    placeholder="End Date" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn btn-primary" ng-click="generateReport(selectedProgram, report, selectedOuMode);showLoad();"
+                ng-disabled="!selectedProgram">{{'Generate Report'| translate}}</button>
+        </div>
+        <div class="col-md-3">
+            <button id="btnExport" class="btn btn-success" ng-click="fnExcelReport();" ng-disabled="!selectedProgram"> Export To Excel </button>
+        </div>
+    </div>
+
+    <div id="showdiv" class="row" style="display: none;">
+        <div class="col-md-6 vertical-spacing">
+            <div class="alert alert-warning">No Data Avilable For the Current Selection.</div>
+        </div>
+    </div>
+</div>
+<!-- Selection Parameter -->
+
+
+
+<div id="divId" class="selcsection">
+    
+        <table id="tableid" class="table-bordered" border="1" align="center" >
+         <thead style="font-size:12px;" >
+        <tr bgcolor="#C2B6B3">
+            <th style="text-align: center; word-wrap: break-word;" colspan="{{program.programTrackedEntityAttributes.length+2}}">{{attribute}}</th>
+            <th style="text-align: center; word-wrap: break-word;" ng-repeat="ps in program.programStages"
+                colspan="{{ps.programStageDataElements.length+2}}">{{ps.name}}</th>
+
+        </tr>
+        <tr bgcolor="#C2B6B3">
+            <th style="width: 100px; word-wrap: break-word;" ng-repeat="enrol in enrollment">{{enrol}}</th>
+            <th style="width: 100px; word-wrap: break-word;" ng-repeat="attr in program.programTrackedEntityAttributes">{{attr.displayName}}</th>
+            <th style="width: 100px; word-wrap: break-word;" ng-repeat="de in psDEs">{{de.dataElement.name}}</th>
+        </tr>
+         </thead>
+      
+        <tbody ng-repeat="tei in teiList">
+        <tr  ng-repeat="event in eventList[tei] track by $index">
+            <td  >{{teiEnrollMap[tei+"-enrollDate"]}}</td>
+            <td >{{teiEnrollOrgMap[tei+"-ouname"]}}</td>
+            <td  ng-repeat="attr in program.programTrackedEntityAttributes">{{attrMap[tei+"-"+attr.trackedEntityAttribute.id]}} </td>
+
+            <td ng-repeat="value in event track by $index" >{{value}}</td>
+        </tr>
+
+        
+        </tbody>
+
+    </table>
+    </div>
+</div>
+<div class="row" ng-if="selectedOrgUnit.programs.length > 0 && !selectedProgram">
+    <div class="col-sm-8 col-md-6 vertical-spacing">
+        <div class="alert alert-warning">{{'please_select_program_report'| translate}}</div> 
+    </div>
+</div>

@@ -1,0 +1,134 @@
+<div id="leftBar">
+    <d2-left-bar></d2-left-bar>
+
+    <div id="orgUnitTree">
+        <ul>
+        </ul>
+    </div>
+
+</div>
+
+
+<div class="row" id="mainPage">
+
+    <div class="col-md-6">
+        <div class="well well-lg">
+            <table class="table table-borderless table-striped">
+                <tr>
+                    <td>Selected Organisation Unit</td>
+                    <td>
+                        <input type="text" class="form-control" value="{{selectedOrgUnit.name|| 'please_select'| translate}}" ng-disabled="true">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Program</td>
+                    <td class='col-sm-4 col-md-3'>
+                        <select ng-model="selectedProgram" class="form-control" ng-options="program.name for program in programs | orderBy: 'name'">
+                            <option value="">Please select program</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+
+        <div id="Scoringtable" style="display:none">
+                <!-- Default panel contents -->
+                <div>*Scoring Parameter</div>
+                <!-- Table -->
+                <table class="table table-hover table-striped" style="float:left;font-size:11px; font-weight: bold;">
+                    <tr style="background-color: #2980B9;color: #F0F3F4">
+                        <th style="background-color: #2980B9;">Points</th>
+                        <th style="background-color: #2980B9;">Performance Based Incentives</th>
+                    </tr>
+                    <tr>
+                        <td>31-40</td>
+                        <td>100%  of PBF to be added in Fixed Component</td>
+                    </tr>
+                    <tr>
+                        <td>21-30</td>
+                        <td>75% of PBF to be added in Fixed Component</td>
+                    </tr>
+                    <tr>
+                        <td>11-20</td>
+                        <td>50% of PBF to be added in Fixed Component</td>
+                    </tr>
+                    <tr>
+                        <td>0-10</td>
+                        <td>Penalty of 20% PBF amount to be deducted from the fixed component of Specialist</td>
+                    </tr>
+                </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Selection Parameter -->
+<div class="well selcsection">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <b>Start Date:-</b>
+                </span>
+                <input calendar ng-model='startdate' class="form-control" ng-change="updateStartDate(startdate);" style="margin:0px;padding: 16px;"
+                    required placeholder="Start Date" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <b>End Date:-</b>
+                </span>
+                <input calendar ng-model='enddate' class="form-control" ng-change="updateEndDate(enddate);" required style="margin:0px;padding: 16px;"
+                    placeholder="End Date" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <button type="button" class="btn btn-primary" ng-click="generateReport(selectedProgram, report, selectedOuMode);showLoad();"
+                ng-disabled="!selectedProgram">Generate Report</button>
+        </div>
+        <div class="col-md-3">
+            <button id="btnExport" class="btn btn-success" ng-click="fnExcelReport();" ng-disabled="!selectedProgram"> Export To Excel </button>
+        </div>
+    </div>
+
+    <div id="showdiv" class="row" style="display: none;">
+        <div class="col-md-6 vertical-spacing">
+            <div class="alert alert-warning">No Data Avilable For the Current Selection.</div>
+        </div>
+    </div>
+</div>
+<!-- Selection Parameter -->
+
+<!-- Table Display -->
+
+<div id="divId" class="selcsection">
+    <div id="loader" style="display: none" class="lds-facebook">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <table id="tableid" class="table table-hover table-striped text-center" style="float:left;font-size: 12px ">
+        <tr>
+            <th colspan="2">{{org}}{{selectedOrgUnitName}}</th>
+            <th colspan="2">{{start}}{{selectedStartDate}}</th>
+            <th colspan="2">{{end}}{{selectedEndDate}}</th>
+        </tr>
+        <tr>
+            <th colspan="6" ng-repeat="ps in program.programStages" colspan="{{ps.newlength+3}}" style="background-color: #DCDCDC;text-align: center">{{program.name}}</th>
+        </tr>
+        <tr>
+            <th ng-repeat="de in psDEs1" style="background-color: #2980B9;color:white">{{de.dataElement.name}}</th>
+            <th ng-repeat="de in psDEs" colspan="{{colspanval}}" style="background-color: #2980B9;color:white">{{de.dataElement.name}}</th>
+        </tr>
+        <tr>
+            <th ng-repeat="he in header track by $index " style="background-color: #85C1E9;padding:0px">{{he}}</th>
+        </tr>
+        <tbody id="showdata">
+        </tbody>
+    </table>
+</div>
+<!-- Table Display -->
